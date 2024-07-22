@@ -6,7 +6,7 @@ API_KEY = '*********************'  # 발급받은 API 키 가려놨습니다. �
 SERVICE_NAME = 'COOKRCP01'  # 서비스 이름
 FILE_TYPE = 'json'  # 요청할 파일 타입
 PAGE_SIZE = 1000  # 한 번에 요청할 데이터 개수
-TOTAL_COUNT = 1124  # 총 데이터 개수
+TOTAL_COUNT = 1124  # 총 레시피 개수
 
 # 데이터를 request해서 받아올수 있는 함수입니다.
 def fetch_data(start_index, end_index):
