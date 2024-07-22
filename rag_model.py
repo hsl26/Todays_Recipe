@@ -8,7 +8,7 @@ from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.memory import ConversationBufferMemory
 from langchain_core.chat_history import InMemoryChatMessageHistory
 from langchain_core.runnables import RunnableLambda, RunnablePassthrough
-
+import json
 from dotenv import load_dotenv
 import os
 def ask_something(chain, query):
@@ -27,18 +27,32 @@ def ask_something(chain, query):
 
 def init_retriver(filepath):
 
+    # 파일 읽기
     with open(filepath, encoding='utf-8') as f:
         recipe_txt = f.read()
 
+    # JSON 데이터 파싱
+    data = json.loads(recipe_txt)
+
+    # 값만 추출하여 개행 문자 추가
+    result = []
+    for recipe in data:
+        # "RCP_NM" 값을 먼저 처리
+        rcp_nm = recipe.pop("RCP_NM")
+        values = [rcp_nm] + [str(value) for value in recipe.values()]
+        result.append('\n'.join(values))  # 딕셔너리 내의 값들 사이에 \n 추가
+
+    # 딕셔너리 사이에 두 개의 개행 문자 추가
+    final_result = '\n\n'.join(result)
 
     recipe_document = Document(
-        page_content=recipe_txt,
+        page_content=final_result,
         metadata={"source": "조리식품의 레시피 DB"}
     )
 
 
     recursive_text_splitter = RecursiveCharacterTextSplitter(
-        separators=["\n\n",".",","],
+        separators=["\n\n","\n"],
         chunk_size=200,
         chunk_overlap=20,
         length_function=len,
@@ -153,7 +167,7 @@ if __name__ == "__main__":
 
     load_dotenv()
 
-    filepath = "C:\\Users\\tjdud\\.vscode\\LLM_bootcamp-elecXsoft\\data_rows.json"   # 레시피 파일의 경로(나중에 수정하기) 
+    filepath = "C:\\Users\\tjdud\\.vscode\\LLM_bootcamp-elecXsoft\\result.json"   # 레시피 파일의 경로(나중에 서버의 폴더 경로에 맞게 수정하기) 
 
     retriever = init_retriver(filepath)
     rag_chain  = init_chain(retriever)
