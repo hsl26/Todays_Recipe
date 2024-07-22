@@ -11,6 +11,7 @@ from langchain_core.runnables import RunnableLambda, RunnablePassthrough
 import json
 from dotenv import load_dotenv
 import os
+
 def ask_something(chain, query):
 
     print(f"User : {query}")
