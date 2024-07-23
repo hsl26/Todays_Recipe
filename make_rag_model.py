@@ -11,6 +11,7 @@ from langchain_core.runnables import RunnableLambda, RunnablePassthrough
 import json
 from dotenv import load_dotenv
 import os
+import time
 
 # chain에 query 질의하는 함수.
 def ask_something(chain, query):
@@ -65,12 +66,19 @@ def init_retriver(filepath):
         model="text-embedding-3-large"
     )
 
+    # Vector db Batch사이즈로 쪼개서 저장하는 Part
+    vector_store = Chroma(
+                collection_name="vector_store",     # 저장할 컬렉션 이름
+                embedding_function=embedding_model, # 임베딩 모델
+                persist_directory="vector_store"    # 저장할 디렉토리 경로(현재 폴더 내에 vector_store라는 폴더 생성 후 그 폴더에 저장)
+    )
 
-    chroma = Chroma("vector_store")
-    vector_store = chroma.from_documents(
-            documents=recursive_splitted_document,
-            embedding=embedding_model
-        )
+    for i in range(0,len(recursive_splitted_document)) :
+        vector_store.add_texts([recursive_splitted_document[i].page_content])
+        time.sleep(0.4)
+        print(i)
+    print("-"*10, "내용 확인", "-"*10)
+    print(vector_store.get())
 
 
     similarity_retriever = vector_store.as_retriever(search_type="similarity")
