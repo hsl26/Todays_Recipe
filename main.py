@@ -5,7 +5,6 @@ from streamlit_cookies_controller import CookieController
 from login_signup import login_page
 from login_signup import signup_page
 from login_signup import complete_signup_page
-from recipe import recipe_page
 
 from main_page import display_main_page
 from mypage import display_mypage
