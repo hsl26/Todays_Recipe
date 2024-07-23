@@ -11,7 +11,7 @@ st.session_state.signup_name = None
 def login_page():
     with st.form("login_form"):
         # 페이지 제목
-        st.title("Today's Recipe")
+        # st.title("Today's Recipe")
 
         # 로그인 양식
         st.header('log-in')
@@ -80,7 +80,7 @@ def signup_page():
     id = st.text_input('id')
 
     if st.button('아이디 중복 확인'):
-        if id not in st.session_state.id_list:
+        if id_not_exists(id):
             id_check()
             st.success("사용 가능한 아이디 입니다.")
         else:
