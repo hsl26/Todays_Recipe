@@ -8,14 +8,16 @@ import user_db as db
 from streamlit_cookies_controller import CookieController
 
 def naviagation_button():
+    cookies = CookieController()
     cols = st.columns([3, 1, 1]) 
+    with cols[0]:
+        st.markdown(f'안녕하세요 **{cookies.get('user_name')}** 님')
     with cols[1]:
         if st.button("마이페이지"):
             st.session_state.page = 'mypage'
             st.rerun()
     with cols[2]:
         if st.button('로그아웃'):
-            cookies = CookieController()
             cookies.set('logged_in', 'False')
             cookies.set('user_id', '')
             cookies.set('user_pw', '')
@@ -32,7 +34,6 @@ def display_main_page():
     naviagation_button()
     
     cookies = CookieController()
-    st.write(f'안녕하세요 {cookies.get('user_name')}님')
     
     user_id = cookies.get('user_name')
     
