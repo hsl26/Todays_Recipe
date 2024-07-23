@@ -1,3 +1,9 @@
+DB_PATH = r"C:\Users\wp3wk\OneDrive\바탕 화면\국민대학교\3학년 여름방학\LLM_Project4\LLM_bootcamp-elecXsoft\test"
+
+# 문서를 디스크에 저장합니다. 저장시 persist_directory에 저장할 경로를 지정합니다.
+
+
+from langchain_text_splitters import CharacterTextSplitter
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.documents import Document
 from langchain_openai import AzureOpenAIEmbeddings, AzureChatOpenAI
@@ -10,7 +16,7 @@ from langchain_core.chat_history import InMemoryChatMessageHistory
 from langchain_core.runnables import RunnableLambda, RunnablePassthrough
 import json
 from dotenv import load_dotenv
-import os
+import os,time
 
 # chain에 query 질의하는 함수.
 def ask_something(chain, query):
@@ -36,15 +42,18 @@ def init_retriver(filepath):
 
     # 값만 추출하여 개행 문자 추가
     result = []
+    count =[]
     for recipe in data:
         # "RCP_NM" 값을 먼저 처리
         rcp_nm = recipe.pop("RCP_NM")
         values = [rcp_nm] + [str(value) for value in recipe.values()]
-        result.append('\n'.join(values))  # 딕셔너리 내의 값들 사이에 \n 추가
-
+        if len('\n'.join(values)) < 800 :
+            count.append(len('\n'.join(values)))
+            result.append('\n'.join(values))  # 딕셔너리 내의 값들 사이에 \n 추가
+            
     # 딕셔너리 사이에 두 개의 개행 문자 추가
     final_result = '\n\n'.join(result)
-
+    print(type(final_result))
     recipe_document = Document(
         page_content=final_result,
         metadata={"source": "조리식품의 레시피 DB"}
@@ -52,26 +61,31 @@ def init_retriver(filepath):
 
 
     recursive_text_splitter = RecursiveCharacterTextSplitter(
-        separators=["\n\n","\n"],
+        separators=["\n\n",'\n'],
         chunk_size=800,
-        chunk_overlap=20,
+        chunk_overlap=0,
         length_function=len,
     )
-
+    
     recursive_splitted_document = recursive_text_splitter.split_documents([recipe_document])
-
-
+    
     embedding_model=AzureOpenAIEmbeddings(
         model="text-embedding-3-large"
     )
-
-
+    
     chroma = Chroma("vector_store")
-    vector_store = chroma.from_documents(
-            documents=recursive_splitted_document,
-            embedding=embedding_model
-        )
-
+    # 총 Docu 갯수
+    print(len(recursive_splitted_document))
+    
+    # Vector db Batch사이즈로 쪼개서 저장하는 Part
+    for i in range(0,len(recursive_splitted_document),30) :
+        batch_db_path = f"{DB_PATH}/batch_{i//30}"
+        vector_store = chroma.from_documents(
+                documents= recursive_splitted_document[i:i+30],
+                embedding=embedding_model,
+                persist_directory=batch_db_path
+            )
+        time.sleep(10)
 
     similarity_retriever = vector_store.as_retriever(search_type="similarity")
     # mmr_retriever = vector_store.as_retriever(search_type="mmr")
@@ -171,7 +185,7 @@ if __name__ == "__main__":
 
     retriever = init_retriver(filepath)
     rag_chain  = init_chain(retriever)
-
+    
     human_inputs = [
         "안녕, 나는 내 냉장고 속 식재료를 가지고 만들 수 있는 요리에 대해 알고 싶어.",
         "내 냉장고에 있는 식재료는 오이, 당근, 양파, 고추, 소고기, 닭고기, 계란이 있어.",
