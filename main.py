@@ -12,7 +12,7 @@ from mypage import display_mypage
 
 from user_db import get_user_name
 
-st.title("레시피 추천 서비스")
+st.title("Today's Recipe")
 
 cookies = CookieController()
 if cookies.get('logged_in') == 'True':
@@ -50,7 +50,7 @@ elif st.session_state.page == 'signup':
 elif st.session_state.page == 'recipe' and st.session_state.selected_index is not None:
     recipe_page(st.session_state.selected_index)
 elif st.session_state.page == 'complete':
-    complete_signup_page(st.session_state.id_list[-1])
+    complete_signup_page(get_user_name(cookies('user_id')))
 elif st.session_state.page == 'main':
     display_main_page()
 elif st.session_state.page == 'mypage':
