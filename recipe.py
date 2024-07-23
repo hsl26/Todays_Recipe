@@ -2,14 +2,16 @@ import streamlit as st
 import streamlit.components.v1 as components
 from streamlit_cookies_controller import CookieController
 
-from user_db import get_user_name
+import user_db as db
 
 import time
 
 from llm import llm_recipe
 
+import re
+
 def navigation_button():
-    cols = st.columns([5, 1]) 
+    cols = st.columns([3, 1, 1]) 
     with cols[0]:
         if st.button("홈으로 돌아가기"):
             st.session_state.page = 'main'
@@ -18,20 +20,21 @@ def navigation_button():
         if st.button("마이페이지"):
             st.session_state.page = 'mypage'
             st.rerun()
+    with cols[2]:
+        if st.button('로그아웃'):
+            cookies = CookieController()
+            cookies.set('logged_in', 'False')
+            cookies.set('user_id', '')
+            st.success('로그아웃 되었습니다.')
+            st.session_state.page = 'login'
+            time.sleep(1)
+            st.rerun()
 
 
 def recipe_page(index):
     cookies = CookieController()
-    st.write(f'안녕하세요 {get_user_name(cookies.get("user_id"))}님')
-
-    if st.button('로그아웃'):
-        
-        cookies.set('logged_in', 'False')
-        cookies.set('user_id', '')
-        st.success('로그아웃 되었습니다.')
-        st.session_state.page = 'login'
-        time.sleep(1)
-        st.rerun()
+    user_id = cookies.get("user_id")
+    # st.write(f'안녕하세요 {cookies.get("user_name")}님')
 
     # HTML 스타일을 사용한 추가 재료 박스
     def additional_ingredients(ingred, link, img_url, description):
@@ -49,28 +52,36 @@ def recipe_page(index):
                         </div>
                     </div>  
                     """, unsafe_allow_html=True)
-        
-    
-    # 프롬프트 엔지니어링으로 재료 리스트만 따로 빼고 전처리.
-    need_ingredient = set(['계란', '소금', '밥', '대파', '당근', '올리브 오일'])
-    # 추후 DB에서 받아오기
-    have_ingredient = set(['계란', '소금', '올리브 오일', '밥', '양배추', '딸기']) 
-    add_ingredient = need_ingredient - have_ingredient
-
-    # st.title('메뉴 이름')
     
     navigation_button()
 
     # st.header('재료')
-    st.header('레시피')
+    # st.header('레시피')
     
     food_name = st.session_state.get("food_name", "정보가 없습니다.")
     
     # llm에 해당 음식 이름 전달 및 결과 반환
-    recipe_info = llm_recipe.GetInformation(food_name)
+    response = llm_recipe.GetInformation(food_name)
+    print(response)
+    recipe_info = re.sub(r'\[.*\]', '', response)
     st.markdown(f"{recipe_info}")
     
+    match = re.search(r'\[.*?\]', response)
+    if match:
+        ingredient_list = match.group()
+        print(ingredient_list)
+        ingredient_list = ingredient_list.strip('[]').replace('"', '').split(', ')
+        # ingredient_list = ingredient_list.replace('\'', '')
+    
     st.header('추가구매 추천 재료')
+    
+    # 프롬프트 엔지니어링으로 재료 리스트만 따로 빼고 전처리.
+    need_ingredient = set(ingredient_list)
+    # 추후 DB에서 받아오기
+    have_ingredient = set(db.get_ingredient(user_id))
+    # have_ingredient = set(['계란', '소금', '올리브 오일', '밥', '양배추', '딸기']) 
+    add_ingredient = need_ingredient - have_ingredient
+    
     if add_ingredient:
         for ingred in list(add_ingredient):
             purchase_link = f"https://www.kurly.com/search?sword={ingred}"
