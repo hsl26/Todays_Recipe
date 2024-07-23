@@ -1,5 +1,4 @@
 import sqlite3
-# con = sqlite3.connect('user.db')
 
 # 사용자 정보 추가
 def add_user(id, pwd, email, name):
@@ -36,6 +35,7 @@ def edit_information(id, new_pwd, new_email):
     con.commit()
     cur.close()
     con.close()
+
 
 # 아이디 존재여부 확인 ( 존재하면 0 반환 )
 def id_not_exists(id):
@@ -91,6 +91,7 @@ def get_user_name(id):
     name = cur.fetchone()
     if name:
         return name[0]
+
 
 # DB에서 회원 정보를 가져오는 함수
 def get_user_information(user_id):
@@ -214,6 +215,7 @@ def delete_likes(id, like):
     con.commit()
     cur.close()
     con.close()
+
 
 # 좋아하는 음식 조회
 def get_likes(id):

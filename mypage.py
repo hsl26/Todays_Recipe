@@ -3,12 +3,6 @@ import user_db as db
 from streamlit_cookies_controller import CookieController
 import time
 
-# db 임시 생성
-# db.add_user('1234', '1234', 'example@gmail.com', '1234')
-# db.add_ingredient('1234', '감자')
-# db.add_ingredient('1234', '물')
-# db.add_likes('1234', '케이크')
-# db.add_dislikes('1234', '땅콩')
 
 def naviagation_button():
     cookies = CookieController()
@@ -32,9 +26,7 @@ def naviagation_button():
 
 def display_mypage():
     cookies = CookieController()
-    
-    # st.write(f'안녕하세요 {cookies.get('user_name')}님')
-    
+        
     user_id = cookies.get('user_id')
     user_pw = cookies.get('user_pw')
     user_email = cookies.get('user_email')
@@ -147,7 +139,6 @@ def display_mypage():
     # 회원정보수정
     st.markdown("### 회원정보")
     with st.form("edit_user_info"):
-        # st.markdown("**정보 수정하기**")
         st.text_input("Name (수정 불가)", value=user_name, disabled=True)
         st.text_input("ID (수정 불가)", value=user_id, disabled=True)
         new_pw = st.text_input("Password", value=user_pw)

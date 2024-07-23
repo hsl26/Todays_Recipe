@@ -1,12 +1,10 @@
 import streamlit as st
-
 from streamlit_cookies_controller import CookieController
 
 from login_signup import login_page
 from login_signup import signup_page
 from login_signup import complete_signup_page
 from recipe import recipe_page
-
 from main_page import display_main_page
 from mypage import display_mypage
 
@@ -14,6 +12,7 @@ from user_db import get_user_name
 
 st.title("Today's Recipe")
 
+# cookie 및 seesion_state 초기화
 cookies = CookieController()
 if cookies.get('logged_in') == 'True':
     logged_in=st.session_state.logged_in = True

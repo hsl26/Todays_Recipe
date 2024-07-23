@@ -1,11 +1,10 @@
 import streamlit as st
+from streamlit_cookies_controller import CookieController
 import time
 
 from llm import llm_food
-
 import user_db as db
 
-from streamlit_cookies_controller import CookieController
 
 def naviagation_button():
     cookies = CookieController()
@@ -68,7 +67,6 @@ def display_main_page():
         if user_input:
             requirement_txt += user_input
         
-        print(requirement_txt)
         # llm에 requirement_txt 전달 및 결과 반환
         output_list = llm_food.GetInformation(requirement_txt)
         output_list = output_list.strip('[]').replace('"', '').split(', ')
