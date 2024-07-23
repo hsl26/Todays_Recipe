@@ -18,7 +18,8 @@ def GetInformation(input_text) :
     # 프롬프트 템플릿 구성. 
     prompt_template = ChatPromptTemplate.from_messages([
         ("system", "You are a helpful assistant. 답변은 한국어로 해줘."),
-        ("system", '''사용자가 입력한 음식에 대한 레시피를 알려줘. 형식은 마크타운으로.
+        ("system", '''사용자가 입력한 음식에 대한 레시피를 알려줘. 형식은 마크타운으로. 그리고 필요한 재료는 마크다운 형식 이후에 에시와 같이 출력해줘. 재료는 단어 형태로만 작성부탁할게.
+        예시: ["재료1", "재료2", "재료3", "재료4", "재료5"] 
         '''),
         ("human", "{input}")   
     ])
