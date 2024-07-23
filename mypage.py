@@ -1,8 +1,7 @@
 import streamlit as st
-
 import user_db as db
-
 from streamlit_cookies_controller import CookieController
+import time
 
 # db 임시 생성
 # db.add_user('1234', '1234', 'example@gmail.com', '1234')
@@ -12,6 +11,7 @@ from streamlit_cookies_controller import CookieController
 # db.add_dislikes('1234', '땅콩')
 
 def naviagation_button():
+    cookies = CookieController()
     cols = st.columns([3, 1, 1]) 
     with cols[1]:
         if st.button("홈으로 돌아가기"):
@@ -33,7 +33,7 @@ def naviagation_button():
 def display_mypage():
     cookies = CookieController()
     
-    st.write(f'안녕하세요 {cookies.get('user_name')}님')
+    # st.write(f'안녕하세요 {cookies.get('user_name')}님')
     
     user_id = cookies.get('user_id')
     user_pw = cookies.get('user_pw')
@@ -46,19 +46,24 @@ def display_mypage():
     
     # 냉장고
     st.markdown("### 내 냉장고")
-    
-    items_list = db.get_ingredient(user_id)
-    st.markdown(items_list)
-    
+
+    items_list = db.get_ingredient(user_id)    
+    items_text_html = "<br/>".join(items_list)
+    st.markdown(
+        f"""
+        <div style="height: 200px; overflow-y: auto; margin-top: 0px; margin-bottom: 20px; padding-top: 10px; padding-left: 20px; background-color: #f0f0f0; border-radius: 10px;">
+            <pre>{items_text_html}</pre>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+        
     cols = st.columns([1, 1]) 
     with cols[0]:
         with st.form("add_ingredient"):
             st.markdown("**재료 추가하기**")
-            subcols = st.columns([3, 1]) 
-            with subcols[0]:
-                add_ingredient_input = st.text_input("추가할 재료를 입력하세요. 예시) 사과", value="")
-            with subcols[1]:
-                submitted_add_ingredient = st.form_submit_button('추가')
+            add_ingredient_input = st.text_input("추가할 재료를 입력하세요. 예시) 사과", value="")
+            submitted_add_ingredient = st.form_submit_button('추가')
         if submitted_add_ingredient:
             db.add_ingredient(user_id, add_ingredient_input)
             print("add_ingredient 성공")
@@ -80,7 +85,15 @@ def display_mypage():
     with cols[0]:
         st.markdown("### 호")
         items_list = db.get_likes(user_id)
-        st.markdown(items_list)
+        items_text_html = "<br/>".join(items_list)
+        st.markdown(
+            f"""
+            <div style="height: 80px; overflow-y: auto; margin-top: 0px; margin-bottom: 20px; padding-top: 10px; padding-left: 20px; background-color: #f0f0f0; border-radius: 10px;">
+                <pre>{items_text_html}</pre>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
         with st.form("likes"):
             st.markdown("**좋아하는 음식 추가하기**")
             add_likes_input = st.text_input("추가할 음식 입력하세요. 예시) 사과", value="")
@@ -102,7 +115,15 @@ def display_mypage():
     with cols[1]:
         st.markdown("### 불호")
         items_list = db.get_dislikes(user_id)
-        st.markdown(items_list)
+        items_text_html = "<br/>".join(items_list)
+        st.markdown(
+            f"""
+            <div style="height: 80px; overflow-y: auto; margin-top: 0px; margin-bottom: 20px; padding-top: 10px; padding-left: 20px; background-color: #f0f0f0; border-radius: 10px;">
+                <pre>{items_text_html}</pre>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
         with st.form("dislikes"):
             st.markdown("**불호 음식 추가하기**")
             add_dislikes_input = st.text_input("추가할 음식 입력하세요. 예시) 사과", value="")
@@ -127,7 +148,8 @@ def display_mypage():
     st.markdown("### 회원정보")
     with st.form("edit_user_info"):
         # st.markdown("**정보 수정하기**")
-        st.text_input("ID (수정 불가)", value=user_id)
+        st.text_input("Name (수정 불가)", value=user_name, disabled=True)
+        st.text_input("ID (수정 불가)", value=user_id, disabled=True)
         new_pw = st.text_input("Password", value=user_pw)
         new_email = st.text_input("Email", value=user_email) 
         submitted_add_ingredient = st.form_submit_button('수정하기')
@@ -136,5 +158,7 @@ def display_mypage():
         db.edit_information(user_id, new_pw, new_email)
         print("edit_user_info 성공")
         st.rerun()
+    
+    st.divider()
     
     st.markdown("### 히스토리")
