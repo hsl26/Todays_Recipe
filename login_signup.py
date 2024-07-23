@@ -3,8 +3,6 @@ from streamlit_cookies_controller import CookieController
 
 import time
 
-from recipe import recipe_page
-
 from user_db import *
 
 st.session_state.name = None
