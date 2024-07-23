@@ -6,7 +6,7 @@ from user_db import get_user_name
 
 import time
 
-import llm_recipe
+from llm import llm_recipe
 
 def navigation_button():
     cols = st.columns([5, 1]) 

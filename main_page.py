@@ -1,7 +1,7 @@
 import streamlit as st
 import time
 
-import llm_food
+from llm import llm_food
 
 import user_db as db
 
@@ -15,6 +15,7 @@ def naviagation_button():
             st.rerun()
     with cols[2]:
         if st.button('로그아웃'):
+            cookies = CookieController()
             cookies.set('logged_in', 'False')
             cookies.set('user_id', '')
             cookies.set('user_pw', '')
