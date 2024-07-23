@@ -23,7 +23,7 @@ def naviagation_button():
             cookies.set('user_name', '')
             st.session_state.logout = True
 
-     if st.session_state.logout:
+    if st.session_state.logout:
         st.success('로그아웃 되었습니다.')
         st.session_state.page = 'login'
         time.sleep(1)

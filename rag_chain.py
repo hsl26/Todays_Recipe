@@ -40,14 +40,16 @@ def init_retriver():
                 persist_directory= "vector_store"    # 저장한 디렉토리 경로(에서 불러온다)
     )
 
-    similarity_retriever = vector_store.as_retriever(search_type="similarity")
-    # mmr_retriever = vector_store.as_retriever(search_type="mmr")
+    # similarity_retriever = vector_store.as_retriever(search_type="similarity")
+    mmr_retriever = vector_store.as_retriever(search_type="mmr")
     # similarity_score_retriever = vector_store.as_retriever(
     #         search_type="similarity_score_threshold", 
     #         search_kwargs={"score_threshold": 0.2}
     #     )
 
-    retriever = similarity_retriever
+    # retriever = similarity_retriever
+    retriever = mmr_retriever
+    # retriever = similarity_score_retriever
 
     return retriever
 
@@ -68,12 +70,6 @@ def init_chain(retriever):
         "without the chat history. Do NOT answer the question, "
         "just reformulate it if needed and otherwise return it as is."
         "please answer the question in Korean."
-        '''사용자가 입력한 음식에 대한 레시피를 알려줘. 
-        자세한 요리 순서를 포함하여 번호를 매겨서 작성하고, 재료도 별도로 알려주면 좋겠어. 여기까지는 마크다운 형식으로 작성해줘.
-        요리에 필요한 재료는 마크다운 형식 이후에 에시와 같이 출력해줘. 
-        재료는 단어 형태로만 작성부탁할게.
-        예시: ["재료1", "재료2", "재료3", "재료4", "재료5"] 
-        '''
     )
 
     contextualize_q_prompt = ChatPromptTemplate.from_messages(
@@ -91,12 +87,14 @@ def init_chain(retriever):
     #Answer Question
     qa_system_prompt_str = """
     You are an assistant for recommending recipe. 
-    Use the following pieces of retrieved context to answer the question.
-    If you cannot find the answer in the retrived context, try to find it in chat history.
-    If you don't know the answer after all, just say that you don't know. 
-    Use three sentences maximum and keep the answer concise.
     Answer for the question in Korean.
-    
+    사용자가 입력한 음식에 대한 레시피를 알려줘. 
+    재료를 먼저 알려주고 자세한 요리 순서를 포함하여 번호를 매겨서 작성해주면 좋겠어.
+    여기까지는 마크다운 형식으로 작성해줘.
+    요리에 필요한 재료는 마크다운 형식 이후에 에시와 같이 출력해줘. 
+    재료는 단어 형태로만 작성부탁할게.
+    예시: ["재료1", "재료2", "재료3", "재료4", "재료5"] 
+
     {context} """.strip()
 
     qa_prompt_template = ChatPromptTemplate.from_messages(
@@ -131,7 +129,7 @@ def init_chain(retriever):
     return rag_chain_with_history
 
 
-
+<<<<<<< HEAD
 if __name__ == "__main__":
 
     load_dotenv()
@@ -149,7 +147,7 @@ if __name__ == "__main__":
 
     for input in human_inputs:
         ask_something(rag_chain, input)
-
+=======
 # if __name__ == "__main__":
 
 #     load_dotenv()
@@ -167,4 +165,3 @@ if __name__ == "__main__":
 
 #     for input in human_inputs:
 #         ask_something(rag_chain, input)
->>>>>>> hsl26
