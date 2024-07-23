@@ -1,4 +1,5 @@
 import streamlit as st
+import time
 
 import llm_food
 
@@ -6,21 +7,34 @@ import user_db as db
 
 from streamlit_cookies_controller import CookieController
 
-from user_db import get_user_name
-
 def naviagation_button():
-    cols = st.columns([5, 1]) 
+    cols = st.columns([3, 1, 1]) 
     with cols[1]:
         if st.button("마이페이지"):
             st.session_state.page = 'mypage'
             st.rerun()
+    with cols[2]:
+        if st.button('로그아웃'):
+            cookies.set('logged_in', 'False')
+            cookies.set('user_id', '')
+            cookies.set('user_pw', '')
+            cookies.set('user_email', '')
+            cookies.set('user_name', '')
+            st.success('로그아웃 되었습니다.')
+            st.session_state.page = 'login'
+            time.sleep(1)
+            st.rerun()
+        
 
 def display_main_page():
     
-    
-    user_id = st.session_state.get("user_id", "정보가 없습니다.")
-    
     naviagation_button()
+    
+    cookies = CookieController()
+    st.write(f'안녕하세요 {cookies.get('user_name')}님')
+    
+    user_id = cookies.get('user_name')
+    
 
     request_form = st.form('request_form')
     request_form.subheader('**요구사항 입력**')
@@ -65,7 +79,6 @@ def display_main_page():
         st.markdown("## 추천 결과")
         st.divider()
         for idx, rec_food in enumerate(st.session_state.output_list, start=1):
-            
             cols = st.columns([4, 1]) 
             with cols[0]:
                 st.markdown(f"**{idx}. {rec_food}**")
@@ -76,3 +89,4 @@ def display_main_page():
                     st.session_state.food_name = rec_food
                     st.rerun() 
             st.divider()
+            

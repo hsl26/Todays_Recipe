@@ -2,6 +2,8 @@ import streamlit as st
 
 import user_db as db
 
+from streamlit_cookies_controller import CookieController
+
 # db 임시 생성
 # db.add_user('1234', '1234', 'example@gmail.com', '1234')
 # db.add_ingredient('1234', '감자')
@@ -10,18 +12,33 @@ import user_db as db
 # db.add_dislikes('1234', '땅콩')
 
 def naviagation_button():
-    cols = st.columns([4, 1]) 
+    cols = st.columns([3, 1, 1]) 
     with cols[1]:
         if st.button("홈으로 돌아가기"):
             st.session_state.page = 'main'
             st.rerun()
+    with cols[2]:
+        if st.button('로그아웃'):
+            cookies.set('logged_in', 'False')
+            cookies.set('user_id', '')
+            cookies.set('user_pw', '')
+            cookies.set('user_email', '')
+            cookies.set('user_name', '')
+            st.success('로그아웃 되었습니다.')
+            st.session_state.page = 'login'
+            time.sleep(1)
+            st.rerun()
 
 
 def display_mypage():
+    cookies = CookieController()
     
-    user_id = st.session_state.get("user_id", "정보가 없습니다.")
-    user_pw = st.session_state.get("user_pw", "정보가 없습니다.")
-    user_email = st.session_state.get("user_email", "정보가 없습니다.")
+    st.write(f'안녕하세요 {cookies.get('user_name')}님')
+    
+    user_id = cookies.get('user_id')
+    user_pw = cookies.get('user_pw')
+    user_email = cookies.get('user_email')
+    user_name = cookies.get('user_name')
     
     st.header(f"{user_id} 님의 마이페이지")
     

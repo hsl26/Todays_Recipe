@@ -1,14 +1,14 @@
 import streamlit as st
 from streamlit_cookies_controller import CookieController
 
+import time
+
 from recipe import recipe_page
 
 from user_db import *
 
 st.session_state.name = None
 st.session_state.signup_name = None
-# delete_user('1234')
-# db.add_user('1234', '1234', 'example@gmail.com', '1234')
 
 def login_page():
     with st.form("login_form"):
@@ -37,15 +37,18 @@ def login_page():
                     
                     st.session_state.page = 'main'
                     st.session_state.user_id = id
-                    pw, email = get_user_information(st.session_state.user_id)
+                    pw, email, name = get_user_information(st.session_state.user_id)
                     st.session_state.user_pw = pw
                     st.session_state.user_email = email
                     
                     cookies = CookieController()
                     cookies.set('logged_in', 'True')
                     cookies.set('user_id', id)
+                    cookies.set('user_pw', pw)
+                    cookies.set('user_email', email)
+                    cookies.set('user_name', name)
                     
-                    # time.sleep(1)
+                    time.sleep(1)
                     st.rerun()
                     
 
