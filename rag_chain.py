@@ -23,6 +23,8 @@ def ask_something(chain, query): #
     )
 
     print(f"LLM : {chain_output}")
+    
+    return chain_output
 
 
 # retriver 설정하는 함수.
@@ -66,6 +68,12 @@ def init_chain(retriever):
         "without the chat history. Do NOT answer the question, "
         "just reformulate it if needed and otherwise return it as is."
         "please answer the question in Korean."
+        '''사용자가 입력한 음식에 대한 레시피를 알려줘. 
+        자세한 요리 순서를 포함하여 번호를 매겨서 작성하고, 재료도 별도로 알려주면 좋겠어. 여기까지는 마크다운 형식으로 작성해줘.
+        요리에 필요한 재료는 마크다운 형식 이후에 에시와 같이 출력해줘. 
+        재료는 단어 형태로만 작성부탁할게.
+        예시: ["재료1", "재료2", "재료3", "재료4", "재료5"] 
+        '''
     )
 
     contextualize_q_prompt = ChatPromptTemplate.from_messages(
@@ -123,20 +131,20 @@ def init_chain(retriever):
     return rag_chain_with_history
 
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
 
-    load_dotenv()
+#     load_dotenv()
     
-    retriever = init_retriver()
-    rag_chain  = init_chain(retriever)
+#     retriever = init_retriver()
+#     rag_chain  = init_chain(retriever)
 
-    human_inputs = [
-        "안녕, 나는 내 냉장고 속 식재료를 가지고 만들 수 있는 요리에 대해 알고 싶어.",
-        "내 냉장고에 있는 식재료는 오이, 당근, 양파, 고추, 소고기, 닭고기, 계란이 있어.",
-        "내 냉장고에 있는 식재료로 만들 수 있는 요리는 뭐가 있을까?",
-        "내 냉장고에 있는 식재료에는 뭐가 있다고 했지?"
-    ]
+#     human_inputs = [
+#         "안녕, 나는 내 냉장고 속 식재료를 가지고 만들 수 있는 요리에 대해 알고 싶어.",
+#         "내 냉장고에 있는 식재료는 오이, 당근, 양파, 고추, 소고기, 닭고기, 계란이 있어.",
+#         "내 냉장고에 있는 식재료로 만들 수 있는 요리는 뭐가 있을까?",
+#         "내 냉장고에 있는 식재료에는 뭐가 있다고 했지?"
+#     ]
 
 
-    for input in human_inputs:
-        ask_something(rag_chain, input)
+#     for input in human_inputs:
+#         ask_something(rag_chain, input)

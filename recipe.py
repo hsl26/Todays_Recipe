@@ -68,7 +68,11 @@ def recipe_page(index):
     
     st.header('추가구매 추천 재료')
     
-    need_ingredient = set(ingredient_list)
+    if ingredient_list:
+        need_ingredient = set(ingredient_list)
+    else:
+        need_ingredient = set([])
+        
     have_ingredient = set(db.get_ingredient(user_id))
     add_ingredient = need_ingredient - have_ingredient
     
