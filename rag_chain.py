@@ -131,7 +131,7 @@ def init_chain(retriever):
     return rag_chain_with_history
 
 
-<<<<<<< HEAD
+
 if __name__ == "__main__":
 
     load_dotenv()
@@ -149,7 +149,7 @@ if __name__ == "__main__":
 
     for input in human_inputs:
         ask_something(rag_chain, input)
-=======
+
 # if __name__ == "__main__":
 
 #     load_dotenv()
