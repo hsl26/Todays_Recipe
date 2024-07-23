@@ -2,15 +2,16 @@ import streamlit as st
 from streamlit_cookies_controller import CookieController
 import streamlit.components.v1 as components
 import time
+from user_db import get_user_name
 
 def recipe_page():
     cookies = CookieController()
-    st.write(f'안녕하세요 {cookies.get("user_name")}님')
+    st.write(f'안녕하세요 {get_user_name(cookies.get("user_id"))}님')
 
     if st.button('로그아웃'):
         
         cookies.set('logged_in', 'False')
-        cookies.set('user_name', '')
+        cookies.set('user_id', '')
         st.success('로그아웃 되었습니다.')
         st.session_state.page = 'login'
         time.sleep(1)

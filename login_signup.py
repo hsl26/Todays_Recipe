@@ -31,7 +31,7 @@ def login_page():
                     
                     cookies = CookieController()
                     cookies.set('logged_in', 'True')
-                    cookies.set('user_name', st.session_state.name)
+                    cookies.set('user_id', id)
                     # 로그인 성공 후의 로직을 여기에 추가할 수 있습니다.
                     # 예를 들어, 사용자의 세션을 관리하는 코드 등.
                     st.session_state.page = 'recipe'

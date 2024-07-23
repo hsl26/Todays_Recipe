@@ -72,9 +72,9 @@ def get_user_name(id):
     cur = con.cursor()
     cur.execute("SELECT NAME FROM user_information WHERE ID = ?", (id, ))
     
-    name = cur.fetchone()[0]
+    name = cur.fetchone()
     if name:
-        return name
+        return name[0]
 
 # 사용자 계정 삭제
 def delete_user(id):
