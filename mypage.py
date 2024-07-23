@@ -5,6 +5,7 @@ import time
 
 
 def naviagation_button():
+    st.session_state.login_state = False
     cookies = CookieController()
     cols = st.columns([3, 1, 1]) 
     with cols[1]:
@@ -18,14 +19,18 @@ def naviagation_button():
             cookies.set('user_pw', '')
             cookies.set('user_email', '')
             cookies.set('user_name', '')
-            st.success('로그아웃 되었습니다.')
-            st.session_state.page = 'login'
-            time.sleep(1)
-            st.rerun()
+            st.session_state.login_state = True
+
+    if st.session_state.login_state:
+        st.success('로그아웃 되었습니다.')
+        st.session_state.page = 'login'
+        time.sleep(1)
+        st.rerun()
 
 
 def display_mypage():
     cookies = CookieController()
+    # st.session_state.input_text = ''
         
     user_id = cookies.get('user_id')
     user_pw = cookies.get('user_pw')
@@ -54,11 +59,12 @@ def display_mypage():
     with cols[0]:
         with st.form("add_ingredient"):
             st.markdown("**재료 추가하기**")
-            add_ingredient_input = st.text_input("추가할 재료를 입력하세요. 예시) 사과", value="")
+            add_ingredient_input = st.text_input("추가할 재료를 입력하세요. 예시) 사과")
             submitted_add_ingredient = st.form_submit_button('추가')
         if submitted_add_ingredient:
             db.add_ingredient(user_id, add_ingredient_input)
             print("add_ingredient 성공")
+            # st.session_state.input_text = ''
             st.rerun()
     with cols[1]:
         with st.form("delete_ingredient"):

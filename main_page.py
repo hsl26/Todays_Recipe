@@ -8,6 +8,7 @@ import user_db as db
 
 def naviagation_button():
     cookies = CookieController()
+    st.session_state.logout = False
     cols = st.columns([3, 1, 1]) 
     with cols[0]:
         st.markdown(f'안녕하세요 **{cookies.get('user_name')}** 님')
@@ -22,10 +23,13 @@ def naviagation_button():
             cookies.set('user_pw', '')
             cookies.set('user_email', '')
             cookies.set('user_name', '')
-            st.success('로그아웃 되었습니다.')
-            st.session_state.page = 'login'
-            time.sleep(1)
-            st.rerun()
+            st.session_state.logout = True
+
+    if st.session_state.logout:
+        st.success('로그아웃 되었습니다.')
+        st.session_state.page = 'login'
+        time.sleep(1)
+        st.rerun()
         
 
 def display_main_page():
@@ -63,7 +67,7 @@ def display_main_page():
         if option3:
             option3_list = db.get_dislikes(user_id)
             option3_txt = ','.join(option3_list)
-            requirement_txt += option3_txt + " 이건 내가 싫어하는 음식이야. 내 불호를 반영해줘."
+            requirement_txt += option3_txt + " 이건 내가 싫어하는 음식이야. 이것들을 절대로 사용하지 않는 음식으로만 추천해줘. 그렇지 않는다면 나는 알러지로 죽을거야."
         if user_input:
             requirement_txt += user_input
         
@@ -79,7 +83,7 @@ def display_main_page():
         st.markdown("## 추천 결과")
         st.divider()
         for idx, rec_food in enumerate(st.session_state.output_list, start=1):
-            cols = st.columns([4, 1]) 
+            cols = st.columns([3, 1]) 
             with cols[0]:
                 st.markdown(f"**{idx}. {rec_food}**")
             with cols[1]:
