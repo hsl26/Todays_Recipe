@@ -14,7 +14,7 @@ import os
 import time
 
 # chain에 query 질의하는 함수.
-def ask_something(chain, query):
+def ask_something(chain, query): #
 
     print(f"User : {query}")
 
@@ -35,7 +35,7 @@ def init_retriver():
     vector_store = Chroma(
                 collection_name="vector_store",     # 저장한 컬렉션 이름
                 embedding_function=embedding_model, # 임베딩 모델
-                persist_directory=r"C:\Users\wp3wk\OneDrive\바탕 화면\국민대학교\3학년 여름방학\LLM_Project4\LLM_bootcamp-elecXsoft\vector_store"    # 저장한 디렉토리 경로(에서 불러온다)
+                persist_directory= "vector_store"    # 저장한 디렉토리 경로(에서 불러온다)
     )
 
     similarity_retriever = vector_store.as_retriever(search_type="similarity")
@@ -46,7 +46,6 @@ def init_retriver():
     #     )
 
     retriever = similarity_retriever
-
 
     return retriever
 
@@ -122,7 +121,6 @@ def init_chain(retriever):
     rag_chain_with_history = load_context_runnable | rag_chain | save_context_runnable
 
     return rag_chain_with_history
-
 
 
 if __name__ == "__main__":
