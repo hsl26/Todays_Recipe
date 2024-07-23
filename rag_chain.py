@@ -23,11 +23,8 @@ def ask_something(chain, query): #
     )
 
     print(f"LLM : {chain_output}")
-<<<<<<< HEAD
-=======
     
     return chain_output
->>>>>>> hsl26
 
 
 # retriver 설정하는 함수.
