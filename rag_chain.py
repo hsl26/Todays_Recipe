@@ -131,25 +131,6 @@ def init_chain(retriever):
     return rag_chain_with_history
 
 
-<<<<<<< HEAD
-if __name__ == "__main__":
-
-    load_dotenv()
-    
-    retriever = init_retriver()
-    rag_chain  = init_chain(retriever)
-
-    human_inputs = [
-        "안녕, 나는 내 냉장고 속 식재료를 가지고 만들 수 있는 요리에 대해 알고 싶어.",
-        "내 냉장고에 있는 식재료는 오이, 당근, 양파, 고추, 소고기, 닭고기, 계란이 있어.",
-        "내 냉장고에 있는 식재료로 만들 수 있는 요리는 뭐가 있을까?",
-        "내 냉장고에 있는 식재료에는 뭐가 있다고 했지?"
-    ]
-
-
-    for input in human_inputs:
-        ask_something(rag_chain, input)
-=======
 # if __name__ == "__main__":
 
 #     load_dotenv()
@@ -167,4 +148,3 @@ if __name__ == "__main__":
 
 #     for input in human_inputs:
 #         ask_something(rag_chain, input)
->>>>>>> hsl26

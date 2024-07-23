@@ -8,7 +8,6 @@ import user_db as db
 from llm import llm_recipe
 
 
-
 def navigation_button():
     cols = st.columns([3, 1, 1]) 
     with cols[0]:
@@ -62,16 +61,17 @@ def recipe_page(index):
     st.markdown(f"{recipe_info}")
     
     match = re.search(r'\[.*?\]', response)
+    ingredient_list = []
     if match:
         ingredient_list = match.group()
         ingredient_list = ingredient_list.strip('[]').replace('"', '').split(', ')
     
     st.header('추가구매 추천 재료')
     
-    if ingredient_list:
-        need_ingredient = set(ingredient_list)
-    else:
-        need_ingredient = set([])
+    # if ingredient_list:
+    need_ingredient = set(ingredient_list)
+    # else:
+    #     need_ingredient = set([])
         
     have_ingredient = set(db.get_ingredient(user_id))
     add_ingredient = need_ingredient - have_ingredient
