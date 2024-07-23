@@ -5,6 +5,7 @@ from streamlit_cookies_controller import CookieController
 from login_signup import login_page
 from login_signup import signup_page
 from login_signup import complete_signup_page
+from recipe import recipe_page
 
 from main_page import display_main_page
 from mypage import display_mypage
@@ -24,7 +25,7 @@ st.session_state.user_id = cookies.get('user_id')
 st.session_state.user_email = cookies.get('user_email')
 st.session_state.user_pw = cookies.get('user_pw')
 
-if cookies.get("logged_in") == 'True':
+if cookies.get("logged_in") == 'True' and st.session_state.page != 'mypage' and st.session_state.page != 'recipe':
     st.session_state.page = 'main'
 elif 'page' not in st.session_state:
     st.session_state.page = 'login'
