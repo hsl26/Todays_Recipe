@@ -5,6 +5,7 @@ import time
 
 
 def naviagation_button():
+    st.session_state.login_state = False
     cookies = CookieController()
     cols = st.columns([3, 1, 1]) 
     with cols[1]:
@@ -18,10 +19,13 @@ def naviagation_button():
             cookies.set('user_pw', '')
             cookies.set('user_email', '')
             cookies.set('user_name', '')
-            st.success('로그아웃 되었습니다.')
-            st.session_state.page = 'login'
-            time.sleep(1)
-            st.rerun()
+            st.session_state.login_state = True
+
+    if st.session_state.login_state:
+        st.success('로그아웃 되었습니다.')
+        st.session_state.page = 'login'
+        time.sleep(1)
+        st.rerun()
 
 
 def display_mypage():
