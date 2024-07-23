@@ -8,6 +8,7 @@ import user_db as db
 
 def naviagation_button():
     cookies = CookieController()
+    st.session_state.logout = False
     cols = st.columns([3, 1, 1]) 
     with cols[0]:
         st.markdown(f'안녕하세요 **{cookies.get('user_name')}** 님')
@@ -22,10 +23,13 @@ def naviagation_button():
             cookies.set('user_pw', '')
             cookies.set('user_email', '')
             cookies.set('user_name', '')
-            st.success('로그아웃 되었습니다.')
-            st.session_state.page = 'login'
-            time.sleep(1)
-            st.rerun()
+            st.session_state.logout = True
+
+    if st.session_state.logout:
+        st.success('로그아웃 되었습니다.')
+        st.session_state.page = 'login'
+        time.sleep(1)
+        st.rerun()
         
 
 def display_main_page():
