@@ -23,6 +23,14 @@ def add_user(id, pwd, email, name):
 def edit_information(id, new_pwd, new_email):
     con = sqlite3.connect('user.db')
     cur = con.cursor()
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS user_information (
+        "ID" TEXT PRIMARY KEY NOT NULL,
+        "PWD" TEXT NOT NULL,
+        "EMAIL" TEXT,
+        "NAME" TEXT
+    ); ''')
+    
     cur.execute("UPDATE user_information SET PWD = ?, EMAIL = ? WHERE ID = ?", (new_pwd, new_email, id))
 
     con.commit()
@@ -46,6 +54,7 @@ def id_not_exists(id):
     con.close()
     return exists == 0
 
+
 # 로그인 (성공시 1 반환)
 def log_in(id, pwd):
     con = sqlite3.connect('user.db')
@@ -64,35 +73,54 @@ def log_in(id, pwd):
     else:
         return 0
 
+
 # 사용자 이름 조회 
 def get_user_name(id):
     con = sqlite3.connect('user.db')
     cur = con.cursor()
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS user_information (
+        "ID" TEXT PRIMARY KEY NOT NULL,
+        "PWD" TEXT NOT NULL,
+        "EMAIL" TEXT,
+        "NAME" TEXT
+    ); ''')
+    
     cur.execute("SELECT NAME FROM user_information WHERE ID = ?", (id, ))
     
-    name = cur.fetchone()[0]
+    name = cur.fetchone()
     if name:
-        return name
+        return name[0]
 
 # DB에서 회원 정보를 가져오는 함수
 def get_user_information(user_id):
     con = sqlite3.connect('user.db')
     cur = con.cursor()
-    cur.execute("SELECT PWD, EMAIL FROM user_information WHERE ID = ?", (user_id,))
+    cur.execute("SELECT PWD, EMAIL, NAME FROM user_information WHERE ID = ?", (user_id,))
     user_info = cur.fetchone()
     cur.close()
     con.close()
     return user_info
 
+
 # 사용자 계정 삭제
 def delete_user(id):
     con = sqlite3.connect('user.db')
     cur = con.cursor()
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS user_information (
+        "ID" TEXT PRIMARY KEY NOT NULL,
+        "PWD" TEXT NOT NULL,
+        "EMAIL" TEXT,
+        "NAME" TEXT
+    ); ''')
+
     cur.execute("DELETE FROM user_information WHERE ID = ?", (id, ))
 
     con.commit()
     cur.close()
     con.close()
+
 
 # 냉장고에 재료 추가
 def add_ingredient(id, ingredient):
@@ -116,6 +144,14 @@ def add_ingredient(id, ingredient):
 def delete_ingredient(id, ingredient):
     con = sqlite3.connect('user.db')
     cur = con.cursor()
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS refrigerator (
+            "ID" TEXT NOT NULL,
+            "INGREDIENT" TEXT NOT NULL,
+            PRIMARY KEY ("ID", "INGREDIENT")
+        );
+    ''')
+
     cur.execute("DELETE FROM refrigerator WHERE ID = ? AND INGREDIENT = ?", (id, ingredient))
 
     con.commit()
@@ -127,6 +163,14 @@ def delete_ingredient(id, ingredient):
 def get_ingredient(id):
     con = sqlite3.connect('user.db')
     cur = con.cursor()
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS refrigerator (
+            "ID" TEXT NOT NULL,
+            "INGREDIENT" TEXT NOT NULL,
+            PRIMARY KEY ("ID", "INGREDIENT")
+        );
+    ''')
+
     cur.execute("SELECT INGREDIENT FROM refrigerator WHERE ID = ?", (id, ))
     result = cur.fetchall()
     lst = [row[0] for row in result] if result else []
@@ -158,17 +202,30 @@ def add_likes(id, like):
 def delete_likes(id, like):
     con = sqlite3.connect('user.db')
     cur = con.cursor()
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS like_items (
+        "ID" TEXT NOT NULL,
+        "LIKE" TEXT NOT NULL,
+        PRIMARY KEY ("ID", "LIKE")
+    ); ''')
+
     cur.execute("DELETE FROM like_items WHERE ID = ? AND LIKE = ?", (id, like))
 
     con.commit()
     cur.close()
     con.close()
 
-
 # 좋아하는 음식 조회
 def get_likes(id):
     con = sqlite3.connect('user.db')
     cur = con.cursor()
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS like_items (
+        "ID" TEXT NOT NULL,
+        "LIKE" TEXT NOT NULL,
+        PRIMARY KEY ("ID", "LIKE")
+    ); ''')
+
     cur.execute("SELECT LIKE FROM like_items WHERE ID = ?", (id, ))
     result = cur.fetchall()
     lst = [row[0] for row in result] if result else []
@@ -200,6 +257,13 @@ def add_dislikes(id, dislike):
 def delete_dislikes(id, dislike):
     con = sqlite3.connect('user.db')
     cur = con.cursor()
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS dislike_items (
+        "ID" TEXT NOT NULL,
+        "DISLIKE" TEXT NOT NULL,
+        PRIMARY KEY ("ID", "DISLIKE")   
+    ); ''')
+
     cur.execute("DELETE FROM dislike_items WHERE ID = ? AND DISLIKE = ?", (id, dislike))
     
     con.commit()
@@ -211,6 +275,13 @@ def delete_dislikes(id, dislike):
 def get_dislikes(id):
     con = sqlite3.connect('user.db')
     cur = con.cursor()
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS dislike_items (
+        "ID" TEXT NOT NULL,
+        "DISLIKE" TEXT NOT NULL,
+        PRIMARY KEY ("ID", "DISLIKE")   
+    ); ''')
+
     cur.execute("SELECT DISLIKE FROM dislike_items WHERE ID = ?", (id, ))
     result = cur.fetchall()
     lst = [row[0] for row in result] if result else []
