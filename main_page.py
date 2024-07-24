@@ -9,6 +9,23 @@ import user_db as db
 def naviagation_button():
     cookies = CookieController()
     st.session_state.logout = False
+    st.markdown("""
+    <style>
+        div[data-testid="column"] {
+            display: flex;
+            align-items: center;
+        }
+        div[data-testid="column"]:nth-child(1) {
+            flex-grow: 1;
+        }
+        div[data-testid="column"]:nth-child(2) {
+            justify-content: flex-end;
+        }
+        div[data-testid="column"]:nth-child(3) {
+            justify-content: flex-end;
+        }
+    </style>
+    """, unsafe_allow_html=True)
     cols = st.columns([4, 1, 1]) 
     with cols[0]:
         st.markdown(f'안녕하세요 **{cookies.get('user_name')}** 님')
@@ -37,7 +54,6 @@ def display_main_page():
     naviagation_button()
     
     cookies = CookieController()
-    
     user_id = cookies.get('user_id')
     
 
@@ -84,9 +100,9 @@ def display_main_page():
         st.markdown("## 추천 결과")
         st.divider()
         for idx, rec_food in enumerate(st.session_state.output_list, start=1):
-            cols = st.columns([3, 1]) 
+            cols = st.columns([1, 1]) 
             with cols[0]:
-                st.markdown(f"**{idx}. {rec_food}**")
+                st.markdown(f"### {idx}. {rec_food}")
             with cols[1]:
                 if st.button("레시피 보러가기", key=idx):
                     st.session_state.page = 'recipe'

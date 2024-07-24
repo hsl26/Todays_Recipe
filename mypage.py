@@ -8,8 +8,6 @@ def naviagation_button():
     cookies = CookieController()
     st.session_state.logout = False
     cols = st.columns([3, 1, 1]) 
-    with cols[0]:
-        st.markdown(f'안녕하세요 **{cookies.get('user_name')}** 님')
     with cols[1]:
         if st.button("홈으로 돌아가기"):
             st.session_state.page = 'main'
@@ -18,28 +16,22 @@ def naviagation_button():
         if st.button('나만의 레시피'):
             st.session_state.page = 'myrecipe_list'
             st.rerun()
-    if st.session_state.logout:
-        st.success('로그아웃 되었습니다.')
-        st.session_state.page = 'login'
-        time.sleep(1)
-        st.rerun()
-
-st.markdown("""
-    <style>
-    div[data-testid="stForm"] {
-        border: 1px solid #ccc; 
-        # border: none;
-        background-color: #ffffff;
-        # padding: 10px;
-    }
-    # input[type="text"] {
-    #     background-color: #f0f0f0;
-
-    # }
-    </style>
-    """, unsafe_allow_html=True)
 
 def display_mypage():
+    st.markdown("""
+        <style>
+        div[data-testid="stForm"] {
+            border: 1px solid #ccc; 
+            # border: none;
+            background-color: #ffffff;
+            # padding: 10px;
+        }
+        # input[type="text"] {
+        #     background-color: #f0f0f0;
+
+        # }
+        </style>
+        """, unsafe_allow_html=True)
     cookies = CookieController()
     # st.session_state.input_text = ''
         
