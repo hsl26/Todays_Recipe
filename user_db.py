@@ -399,3 +399,28 @@ def remove_recipe(id, food,db_name = DB_NAME):
     
     conn.commit()
     conn.close()
+
+# 레시피 존재 여부 확인 ( 존재하면 1 반환 )
+def check_exists(id, food, db_name = DB_NAME):
+    initialize_recipe_table()
+
+    conn = sqlite3.connect(db_name)
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT EXISTS(SELECT 1 FROM recipes WHERE ID=? AND food=?)", (id, food))
+    result = cursor.fetchone()[0]
+    conn.close()
+
+    return result
+
+# 새로운 값으로 덮어쓰기
+def replace_recipe(id, food, new_food_name, new_recipe, db_name = DB_NAME):
+    initialize_recipe_table()
+    
+    conn = sqlite3.connect(db_name)
+    cursor = conn.cursor()
+    
+    cursor.execute('UPDATE recipes SET food = ?, recipe = ? WHERE ID = ? AND food = ?', (new_food_name, new_recipe, id, food))
+    
+    conn.commit()
+    conn.close()
