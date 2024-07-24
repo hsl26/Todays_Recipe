@@ -15,9 +15,6 @@ def naviagation_button():
             display: flex;
             align-items: center;
         }
-        div[data-testid="column"]:nth-child(1) {
-            flex-grow: 1;
-        }
         div[data-testid="column"]:nth-child(2) {
             justify-content: flex-end;
         }
@@ -50,7 +47,6 @@ def naviagation_button():
         
 
 def display_main_page():
-    
     naviagation_button()
     
     cookies = CookieController()
