@@ -9,7 +9,7 @@ import user_db as db
 def naviagation_button():
     cookies = CookieController()
     st.session_state.logout = False
-    cols = st.columns([3, 1, 1]) 
+    cols = st.columns([4, 1, 1]) 
     with cols[0]:
         st.markdown(f'안녕하세요 **{cookies.get('user_name')}** 님')
     with cols[1]:
@@ -38,7 +38,7 @@ def display_main_page():
     
     cookies = CookieController()
     
-    user_id = cookies.get('user_name')
+    user_id = cookies.get('user_id')
     
 
     request_form = st.form('request_form')
@@ -72,6 +72,7 @@ def display_main_page():
             requirement_txt += user_input
         
         # llm에 requirement_txt 전달 및 결과 반환
+        print(requirement_txt)
         output_list = llm_food.GetInformation(requirement_txt)
         output_list = output_list.strip('[]').replace('"', '').split(', ')
         
