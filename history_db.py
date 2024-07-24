@@ -76,7 +76,22 @@ def get_recipe(id, food,db_name = DB_NAME):
     conn.close()
     
     # 레시피를 반환합니다.
-    return recipe[0]
+    return recipe[0] if recipe else None
+
+# 특정 유저의 모든 food를 반환하는 함수.   사용법 예시 ) users_all_food = get_users_all_food('parkgod98')
+# 파이썬 배열 형식의 리턴값을 가집니다. ex ['김치찌개', '된장찌개', '사시미']
+def get_users_all_food(id, db_name=DB_NAME):
+    make_database()
+    
+    conn = sqlite3.connect(db_name)
+    cursor = conn.cursor()
+    
+    cursor.execute('SELECT food FROM recipes WHERE ID = ?', (id,))
+    foods = cursor.fetchall()
+    
+    conn.close()
+    
+    return [food[0] for food in foods]
 
 # id,food만 파라미터로 삽입하면 그 행을 지울 함수입니다. 사용법 예시) remove_recipe(id,food)
 def remove_recipe(id, food,db_name = DB_NAME):
