@@ -1,12 +1,13 @@
 import streamlit as st
+from streamlit_cookies_controller import CookieController
 from recipe import recipe_page
+from user_db import *
+import time
 
+st.session_state.name = None
+st.session_state.signup_name = None
 def login_page():
-    with st.form("lojin_form"):
-        # 페이지 제목
-        st.title("Today's Recipe")
-
-        # 로그인 양식
+    with st.form("login_form"):
         st.header('log-in')
 
         # 사용자 입력 필드
@@ -15,17 +16,29 @@ def login_page():
 
         # 로그인 버튼
         if st.form_submit_button('로그인'):
-            # 예시로 간단한 사용자 검증 로직 (실제 프로젝트에서는 데이터베이스 검증 등을 사용)
-            if id not in st.session_state.id_list:
+            if id_not_exists(id):
                 st.success("회원정보가 없습니다. 회원가입을 진행해주세요")
             else:
-                correct_pw = st.session_state.pw_list[st.session_state.id_list.index(id)]
-                if password == correct_pw:
-                    st.success(f"환영합니다, {id}님!")
-                    # 로그인 성공 후의 로직을 여기에 추가할 수 있습니다.
-                    # 예를 들어, 사용자의 세션을 관리하는 코드 등.
-                    st.session_state.page = 'recipe'
+                if log_in(id, password):
+                    st.session_state.name = get_user_name(id)
+                    st.success(f"환영합니다, {st.session_state.name}님!")
+                    
+                    st.session_state.page = 'main'
+                    st.session_state.user_id = id
+                    pw, email, name = get_user_information(st.session_state.user_id)
+                    st.session_state.user_pw = pw
+                    st.session_state.user_email = email
+                    
+                    cookies = CookieController()
+                    cookies.set('logged_in', 'True')
+                    cookies.set('user_id', id)
+                    cookies.set('user_pw', pw)
+                    cookies.set('user_email', email)
+                    cookies.set('user_name', name)
+                    
+                    time.sleep(1)
                     st.rerun()
+                    
 
                 else:
                     st.error('잘못된 비밀번호입니다.')
@@ -35,9 +48,9 @@ def login_page():
             st.rerun()
 
 def signup_page():
-    def append_info(id, pw):
-        st.session_state.id_list.append(id)
-        st.session_state.pw_list.append(pw)
+    # def append_info(id, pw):
+    #     st.session_state.id_list.append(id)
+    #     st.session_state.pw_list.append(pw)
 
     if 'id_check' not in st.session_state:
         st.session_state.id_check = False
@@ -55,7 +68,7 @@ def signup_page():
     id = st.text_input('id')
 
     if st.button('아이디 중복 확인'):
-        if id not in st.session_state.id_list:
+        if id_not_exists(id):
             id_check()
             st.success("사용 가능한 아이디 입니다.")
         else:
@@ -70,8 +83,10 @@ def signup_page():
         if id and password and email and fullname and st.session_state.id_check:
             # 여기서 실제 회원가입 로직을 추가할 수 있습니다.
             # 예를 들어, 데이터베이스에 사용자 정보를 저장하는 코드 등.
-            append_info(id, password)
+            add_user(id, password, email, fullname)
+            # append_info(id, password)
             st.session_state.page = 'complete'
+            st.session_state.signup_name = fullname
             st.rerun()
         else:
             st.error('모든 필드를 입력과 아이디 중복확인을 마쳐주세요.')
@@ -80,9 +95,9 @@ def signup_page():
         st.session_state.page = 'login'
         st.rerun()
 
-def complete_signup_page(id):
+def complete_signup_page(name):
     with st.form("complete_form"):
-        st.subheader(f'🎉{id}님, 회원가입을 환영합니다🎉')
+        st.subheader(f'🎉{st.session_state.signup_name}님, 회원가입을 환영합니다🎉')
         st.subheader('서비스를 이용하시려면 로그인을 진행해 주세요.')
         
         if st.form_submit_button('로그인 하러 가기'):
