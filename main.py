@@ -7,6 +7,8 @@ from login_signup import complete_signup_page
 from recipe import recipe_page
 from main_page import display_main_page
 from mypage import display_mypage
+from myrecipe_view_page import display_my_recipe_view
+from myrecipe_list_page import display_my_recipe_list
 
 from user_db import get_user_name
 
@@ -24,7 +26,13 @@ st.session_state.user_id = cookies.get('user_id')
 st.session_state.user_email = cookies.get('user_email')
 st.session_state.user_pw = cookies.get('user_pw')
 
-if cookies.get("logged_in") == 'True' and st.session_state.page != 'mypage' and st.session_state.page != 'recipe':
+page_list = []
+
+if cookies.get("logged_in") == 'True' and \
+    st.session_state.page != 'mypage' and \
+        st.session_state.page != 'recipe' and \
+            st.session_state.page != 'myrecipe_list' and \
+                st.session_state.page != 'myrecipe_view':
     st.session_state.page = 'main'
 elif 'page' not in st.session_state:
     st.session_state.page = 'login'
@@ -52,6 +60,9 @@ elif st.session_state.page == 'complete':
     complete_signup_page(st.session_state.user_name)
 elif st.session_state.page == 'main':
     display_main_page()
-elif st.session_state.page == 'mypage':
+elif st.session_state.page == 'mypage' and st.session_state.page != 'myrecipe_view_list':
     display_mypage()
-    
+elif st.session_state.page == 'myrecipe_list':
+    display_my_recipe_list()
+elif st.session_state.page == 'myrecipe_view':
+    display_my_recipe_view()

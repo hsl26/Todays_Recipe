@@ -10,6 +10,7 @@ from llm import llm_recipe
 
 def navigation_button():
     cols = st.columns([3, 1, 1]) 
+    cookies = CookieController()
     with cols[0]:
         if st.button("홈으로 돌아가기"):
             st.session_state.page = 'main'
@@ -20,9 +21,11 @@ def navigation_button():
             st.rerun()
     with cols[2]:
         if st.button('로그아웃'):
-            cookies = CookieController()
             cookies.set('logged_in', 'False')
             cookies.set('user_id', '')
+            cookies.set('user_pw', '')
+            cookies.set('user_email', '')
+            cookies.set('user_name', '')
             st.success('로그아웃 되었습니다.')
             st.session_state.page = 'login'
             time.sleep(1)
@@ -51,12 +54,12 @@ def recipe_page(index):
                     """, unsafe_allow_html=True)
     
     navigation_button()
-
-
+    
     food_name = st.session_state.get("food_name", "정보가 없습니다.")
     
     # llm에 해당 음식 이름 전달 및 결과 반환
     response = llm_recipe.GetInformation(food_name)
+    
     recipe_info = re.sub(r'\[.*\]', '', response)
     st.markdown(f"{recipe_info}")
     
