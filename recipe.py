@@ -33,7 +33,11 @@ def navigation_button():
     with cols[2]:
         open_modal = st.button("내 레시피에 추가")
         if open_modal:
-            modal.open()
+            if db.check_exists(st.session_state.user_id, st.session_state.get("food_name", "정보가 없습니다.")):
+                modal.open()
+            else:
+                st.success('내 레시피에 추가되었습니다.')
+                db.insert_recipe(st.session_state.user_id, st.session_state.get("food_name", "정보가 없습니다."), st.session_state['response'])
         if modal.is_open():
             with modal.container():
                 st.markdown("**이미 존재하는 레시피 이름입니다.**")
@@ -43,11 +47,14 @@ def navigation_button():
                 with modal_col_0:
                     if st.button("이름 변경해서 추가"):
                         # 이름 변경해서 추가 로직
-                        st.write("이름 변경해서 추가가 클릭되었습니다.")
+                        db.insert_recipe(st.session_state.user_id, new_food_name, st.session_state['response'])
+                        
+                        st.success("이름 변경해서 추가되었습니다.")
                 with modal_col_1:
                     if st.button("덮어쓰기"):   
                         # 덮어쓰기 로직
-                        st.write("덮어쓰기가 클릭되었습니다.")
+                        db.replace_recipe(st.session_state.user_id, st.session_state.get("food_name", "정보가 없습니다."), new_food_name, st.session_state['response'])
+                        st.success("덮어쓰기가 완료되었습니다.")
             
 
 def recipe_page(index):
