@@ -100,6 +100,7 @@ def get_users_all_food(id, db_name=DB_NAME):
     return [food[0] for food in foods]
 
 
+
 # id,food만 파라미터로 삽입하면 그 행을 지울 함수입니다. 사용법 예시) remove_recipe(id,food)
 def remove_recipe(id, food,db_name = DB_NAME):
     make_database()

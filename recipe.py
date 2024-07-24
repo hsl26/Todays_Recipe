@@ -3,36 +3,55 @@ import streamlit.components.v1 as components
 from streamlit_cookies_controller import CookieController
 import time
 import re
-
+from streamlit_modal import Modal
 import user_db as db
 from llm import llm_recipe
 
 
 def navigation_button():
-    cols = st.columns([3, 1, 1]) 
-    cookies = CookieController()
+    cols = st.columns([3.05, 0.9, 1.15]) 
+    
+    modal = Modal(
+        "내 레시피에 추가", 
+        key="My recipes",
+        
+        # Optional
+        padding=20,    # default value
+        max_width=550  # default value
+    )
+    
     with cols[0]:
         if st.button("홈으로 돌아가기"):
             st.session_state.page = 'main'
+            st.session_state['response'] = None
             st.rerun()
     with cols[1]:
         if st.button("마이페이지"):
             st.session_state.page = 'mypage'
+            st.session_state['response'] = None
             st.rerun()
     with cols[2]:
-        if st.button('로그아웃'):
-            cookies.set('logged_in', 'False')
-            cookies.set('user_id', '')
-            cookies.set('user_pw', '')
-            cookies.set('user_email', '')
-            cookies.set('user_name', '')
-            st.success('로그아웃 되었습니다.')
-            st.session_state.page = 'login'
-            time.sleep(1)
-            st.rerun()
-
+        open_modal = st.button("내 레시피에 추가")
+        if open_modal:
+            modal.open()
+        if modal.is_open():
+            with modal.container():
+                st.markdown("**이미 존재하는 레시피 이름입니다.**")
+                
+                new_food_name = st.text_input("저장을 원하신다면 새 레시피 이름을 적어주세요.", st.session_state.get("food_name", "정보가 없습니다."))
+                modal_col_0, modal_col_1  = st.columns([4.3,1]) 
+                with modal_col_0:
+                    if st.button("이름 변경해서 추가"):
+                        # 이름 변경해서 추가 로직
+                        st.write("이름 변경해서 추가가 클릭되었습니다.")
+                with modal_col_1:
+                    if st.button("덮어쓰기"):   
+                        # 덮어쓰기 로직
+                        st.write("덮어쓰기가 클릭되었습니다.")
+            
 
 def recipe_page(index):
+    
     cookies = CookieController()
     user_id = cookies.get("user_id")
 
@@ -57,8 +76,14 @@ def recipe_page(index):
     
     food_name = st.session_state.get("food_name", "정보가 없습니다.")
     
-    # llm에 해당 음식 이름 전달 및 결과 반환
-    response = llm_recipe.GetInformation(food_name)
+    if 'response' not in st.session_state:
+        st.session_state['response'] = None
+        
+    if st.session_state['response'] is None:
+        response = llm_recipe.GetInformation(food_name)
+        st.session_state['response'] = response
+    else:
+        response = st.session_state['response']
     
     recipe_info = re.sub(r'\[.*\]', '', response)
     st.markdown(f"{recipe_info}")
