@@ -15,20 +15,29 @@ def naviagation_button():
             st.session_state.page = 'main'
             st.rerun()
     with cols[2]:
-        if st.button('로그아웃'):
-            cookies.set('logged_in', 'False')
-            cookies.set('user_id', '')
-            cookies.set('user_pw', '')
-            cookies.set('user_email', '')
-            cookies.set('user_name', '')
-            st.session_state.logout = True
-
+        if st.button('나만의 레시피'):
+            st.session_state.page = 'myrecipe_list'
+            st.rerun()
     if st.session_state.logout:
         st.success('로그아웃 되었습니다.')
         st.session_state.page = 'login'
         time.sleep(1)
         st.rerun()
 
+st.markdown("""
+    <style>
+    div[data-testid="stForm"] {
+        border: 1px solid #ccc; 
+        # border: none;
+        background-color: #ffffff;
+        # padding: 10px;
+    }
+    # input[type="text"] {
+    #     background-color: #f0f0f0;
+
+    # }
+    </style>
+    """, unsafe_allow_html=True)
 
 def display_mypage():
     cookies = CookieController()
@@ -50,7 +59,9 @@ def display_mypage():
     items_text_html = "<br/>".join(items_list)
     st.markdown(
         f"""
-        <div style="height: 200px; overflow-y: auto; margin-top: 0px; margin-bottom: 20px; padding-top: 10px; padding-left: 20px; background-color: #f0f0f0; border-radius: 10px;">
+        <div style="height: 200px; overflow-y: auto; margin-top: 0px; margin-bottom: 20px; 
+            background-color: #f1f2f6;
+            padding-top: 10px; padding-left: 20px; border-radius: 10px;">
             <pre>{items_text_html}</pre>
         </div>
         """,
@@ -88,25 +99,26 @@ def display_mypage():
         items_text_html = "<br/>".join(items_list)
         st.markdown(
             f"""
-            <div style="height: 80px; overflow-y: auto; margin-top: 0px; margin-bottom: 20px; padding-top: 10px; padding-left: 20px; background-color: #f0f0f0; border-radius: 10px;">
+            <div style="height: 80px; overflow-y: auto; margin-top: 0px; margin-bottom: 20px; 
+            padding-top: 10px; padding-left: 20px; 
+            background-color: #f1f2f6; border-radius: 10px;">
                 <pre>{items_text_html}</pre>
             </div>
             """,
             unsafe_allow_html=True
         )
-        with st.form("likes"):
+        with st.form("add_likes"):
             st.markdown("**좋아하는 음식 추가하기**")
             add_likes_input = st.text_input("추가할 음식 입력하세요. 예시) 사과", value="")
             submitted_add_likes = st.form_submit_button('추가')
-            
-            st.markdown("**좋아하는 음식 삭제하기**")
-            delete_likes_input = st.text_input("삭제할 음식 입력하세요. 예시) 사과", value="")
-            submitted_delete_likes = st.form_submit_button('삭제')
-            
         if submitted_add_likes:
             db.add_likes(user_id, add_likes_input)
             print("add_likes 성공")
             st.rerun()
+        with st.form("del_likes"):
+            st.markdown("**좋아하는 음식 삭제하기**")
+            delete_likes_input = st.text_input("삭제할 음식 입력하세요. 예시) 사과", value="")
+            submitted_delete_likes = st.form_submit_button('삭제')
         if submitted_delete_likes:
             db.delete_likes(user_id, delete_likes_input)
             print("delete_likes 성공")
@@ -118,25 +130,26 @@ def display_mypage():
         items_text_html = "<br/>".join(items_list)
         st.markdown(
             f"""
-            <div style="height: 80px; overflow-y: auto; margin-top: 0px; margin-bottom: 20px; padding-top: 10px; padding-left: 20px; background-color: #f0f0f0; border-radius: 10px;">
+            <div style="height: 80px; overflow-y: auto; margin-top: 0px; margin-bottom: 20px; 
+            padding-top: 10px; padding-left: 20px; 
+            background-color: #f1f2f6; border-radius: 10px;">
                 <pre>{items_text_html}</pre>
             </div>
             """,
             unsafe_allow_html=True
         )
-        with st.form("dislikes"):
+        with st.form("add_dislikes"):
             st.markdown("**불호 음식 추가하기**")
             add_dislikes_input = st.text_input("추가할 음식 입력하세요. 예시) 사과", value="")
             submitted_add_dislikes = st.form_submit_button('추가')
-            
-            st.markdown("**불호 음식 삭제하기**")
-            delete_dislikes_input = st.text_input("삭제할 음식 입력하세요. 예시) 사과", value="")
-            submitted_delete_dislikes = st.form_submit_button('삭제')
-            
         if submitted_add_dislikes:
             db.add_dislikes(user_id, add_dislikes_input)
             print("add_dislikes 성공")
             st.rerun()
+        with st.form("del_dislikes"):
+            st.markdown("**불호 음식 삭제하기**")
+            delete_dislikes_input = st.text_input("삭제할 음식 입력하세요. 예시) 사과", value="")
+            submitted_delete_dislikes = st.form_submit_button('삭제')
         if submitted_delete_dislikes:
             db.delete_dislikes(user_id, delete_dislikes_input)
             print("delete_dislikes 성공")
@@ -158,6 +171,3 @@ def display_mypage():
         print("edit_user_info 성공")
         st.rerun()
     
-    st.divider()
-    
-    st.markdown("### 히스토리")
