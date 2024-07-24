@@ -1,7 +1,6 @@
 import streamlit as st
 from streamlit_cookies_controller import CookieController
 import time
-
 from user_db import *
 
 st.session_state.name = None
@@ -40,7 +39,6 @@ def login_page():
                     time.sleep(1)
                     st.rerun()
                     
-
                 else:
                     st.error('잘못된 비밀번호입니다.')
 

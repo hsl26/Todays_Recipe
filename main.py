@@ -57,7 +57,7 @@ elif st.session_state.page == 'signup':
 elif st.session_state.page == 'recipe' and st.session_state.selected_index is not None:
     recipe_page(st.session_state.selected_index)
 elif st.session_state.page == 'complete':
-    complete_signup_page(get_user_name(cookies('user_id')))
+    complete_signup_page(st.session_state.user_name)
 elif st.session_state.page == 'main':
     display_main_page()
 elif st.session_state.page == 'mypage' and st.session_state.page != 'myrecipe_view_list':
