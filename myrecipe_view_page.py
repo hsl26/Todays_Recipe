@@ -4,12 +4,16 @@ from streamlit_cookies_controller import CookieController
 import re
 
 import user_db as db
-# import history_db as h_db
 
-def navigation_button():
-    cols = st.columns([3, 1]) 
+def navigation_button(id, food):
+    cols = st.columns([5, 2, 1]) 
     with cols[1]:
         if st.button("목록으로 돌아가기"):
+            st.session_state.page = 'myrecipe_list'
+            st.rerun()
+    with cols[2]:
+        if st.button("삭제"):
+            db.remove_recipe(id, food)
             st.session_state.page = 'myrecipe_list'
             st.rerun()
 
@@ -17,7 +21,7 @@ def display_my_recipe_view():
     cookies = CookieController()
     user_id = cookies.get("user_id")
     food = st.session_state.get("my_food_name")
-    navigation_button()
+    navigation_button(user_id, food)
 
      # HTML 스타일을 사용한 추가 재료 박스
     def additional_ingredients(ingred, link):
@@ -76,3 +80,4 @@ def display_my_recipe_view():
             #추가 재료 품목을 링크로 출력
             purchase_link = f"https://www.kurly.com/search?sword={ingred}"
             additional_ingredients(ingred, purchase_link)
+            
