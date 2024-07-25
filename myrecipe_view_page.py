@@ -4,7 +4,7 @@ from streamlit_cookies_controller import CookieController
 import re
 
 import user_db as db
-import history_db as h_db
+# import history_db as h_db
 
 def navigation_button():
     cols = st.columns([3, 1]) 
@@ -36,7 +36,7 @@ def display_my_recipe_view():
                     </ul>
                 </div>
             """, unsafe_allow_html=True)
-    recipe = h_db.get_recipe(user_id, food)
+    recipe = db.get_recipe(user_id, food)
 
     
     recipe_info = re.sub(r'\[.*\]', '', recipe)

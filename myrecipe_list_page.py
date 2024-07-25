@@ -3,7 +3,7 @@ import user_db as db
 from streamlit_cookies_controller import CookieController
 import time
 
-from history_db import *
+from user_db import *
 
 def navigation_button():
     st.markdown("""
