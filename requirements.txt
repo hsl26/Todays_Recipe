@@ -4,3 +4,6 @@ streamlit
 yfinance
 pandas-datareader
 prophet
+streamlit                                                 
+streamlit_cookies_controller
+login_signup
