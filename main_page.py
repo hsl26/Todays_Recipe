@@ -25,7 +25,7 @@ def naviagation_button():
     """, unsafe_allow_html=True)
     cols = st.columns([4, 1, 1]) 
     with cols[0]:
-        st.markdown(f'안녕하세요 **{cookies.get('user_name')}** 님')
+        st.markdown(f'안녕하세요 **{cookies.get("user_name")}** 님')
     with cols[1]:
         if st.button("마이페이지"):
             st.session_state.page = 'mypage'
