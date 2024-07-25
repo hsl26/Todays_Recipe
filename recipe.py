@@ -9,6 +9,10 @@ from llm import llm_recipe
 
 
 def navigation_button():
+    st.session_state.add_db = False
+    st.session_state.modal_col_0 = False
+    st.session_state.modal_col_1 = False
+    
     cols = st.columns([3.05, 0.9, 1.15]) 
     
     modal = Modal(
@@ -36,7 +40,7 @@ def navigation_button():
             if db.check_exists(st.session_state.user_id, st.session_state.get("food_name", "정보가 없습니다.")):
                 modal.open()
             else:
-                st.success('내 레시피에 추가되었습니다.')
+                st.session_state.add_db = True
                 db.insert_recipe(st.session_state.user_id, st.session_state.get("food_name", "정보가 없습니다."), st.session_state['response'])
         if modal.is_open():
             with modal.container():
@@ -48,14 +52,24 @@ def navigation_button():
                     if st.button("이름 변경해서 추가"):
                         # 이름 변경해서 추가 로직
                         db.insert_recipe(st.session_state.user_id, new_food_name, st.session_state['response'])
-                        
-                        st.success("이름 변경해서 추가되었습니다.")
+                        st.session_state.modal_col_0 = True
+                        st.session_state.modal_col_1 = False
+                        # st.success("이름 변경해서 추가되었습니다.")
                 with modal_col_1:
                     if st.button("덮어쓰기"):   
                         # 덮어쓰기 로직
                         db.replace_recipe(st.session_state.user_id, st.session_state.get("food_name", "정보가 없습니다."), new_food_name, st.session_state['response'])
-                        st.success("덮어쓰기가 완료되었습니다.")
-            
+                        # st.success("덮어쓰기가 완료되었습니다.")
+                        st.session_state.modal_col_0 = False
+                        st.session_state.modal_col_1 = True
+                if st.session_state.modal_col_0:
+                    st.success("이름 변경해서 추가되었습니다.")
+                if st.session_state.modal_col_1:
+                    st.success("덮어쓰기가 완료되었습니다.")
+    if st.session_state.add_db:
+        st.success('내 레시피에 추가되었습니다.')
+        st.session_state.add_db = False
+                    
 
 def recipe_page(index):
     
@@ -63,21 +77,22 @@ def recipe_page(index):
     user_id = cookies.get("user_id")
 
     # HTML 스타일을 사용한 추가 재료 박스
-    def additional_ingredients(ingred, link, img_url, description):
+    def additional_ingredients(ingred, link):
         st.markdown(f"""
-                    <div style="padding: 10px; margin-top: 10px; border-bottom: 1px solid #ddd;">
-                        <div style="display: flex; align-items: center;">
-                            <img src="{img_url}" alt="preview" style="width: 100px; height: 100px; object-fit: cover; margin-right: 10px;">
-                            <div>
-                                <ul>
-                                    <p style="font-weight: 700; font-size: 20px;">{ingred}</p>
-                                    <p>{description}</p>
-                                    <p><a href="{link}" target="_blank" style="color: gray; font-style: italic;">{ingred} 구매 링크 바로가기</a></p>
-                             </ul>
-                            </div>
-                        </div>
-                    </div>  
-                    """, unsafe_allow_html=True)
+                <div style="padding: 5px; margin-top: 5px">
+                    <ul style="list-style-type: disc; margin: 0; padding-left: 20px; align-items: center;">
+                        <li>
+                            <a href="{link}" 
+                                    style="color: black; 
+                                    text-decoration: none;
+                                    font-size: 20px; 
+                                    font-weight: bold;">
+                                {ingred}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            """, unsafe_allow_html=True)
     
     navigation_button()
     
@@ -112,8 +127,20 @@ def recipe_page(index):
     add_ingredient = need_ingredient - have_ingredient
     
     if add_ingredient:
+        #마켓컬리 로고사진과 문구 출력
+        img_url = "https://res.kurly.com/images/marketkurly/logo/logo_sns_marketkurly.jpg"
+        st.markdown(f"""
+            <div style="padding: 10px; margin-top: 10px; border-bottom: 1px solid #ddd;">
+                <div style="display: flex; flex-direction: column;">
+                    <img src="{img_url}" alt="preview" style="width: 100px; height: 100px; object-fit: cover; margin-bottom: 10px;">
+                </div>
+                <div style="text-align: left; font-size: 18px; padding: 1px;">
+                    <span>{"상품명을 누르시면 마켓컬리 구매 링크로 연결됩니다."}</span>
+                </div>
+            </div>  
+            """, unsafe_allow_html=True)
+        
         for ingred in list(add_ingredient):
+            #추가 재료 품목을 링크로 출력
             purchase_link = f"https://www.kurly.com/search?sword={ingred}"
-            img_url = "https://res.kurly.com/images/marketkurly/logo/logo_sns_marketkurly.jpg"  # 예시 이미지 URL을 적절히 변경
-            description = "마켓 컬리에서 찾은 관련 상품입니다."
-            additional_ingredients(ingred, purchase_link, img_url, description)
+            additional_ingredients(ingred, purchase_link)
