@@ -40,7 +40,7 @@ def display_mypage():
     user_email = cookies.get('user_email')
     user_name = cookies.get('user_name')
     
-    st.header(f"{user_id} 님의 마이페이지")
+    st.header(f"{user_name} 님의 마이페이지")
     
     naviagation_button()
     
