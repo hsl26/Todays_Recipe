@@ -50,11 +50,14 @@ def navigation_button():
                 modal_col_0, modal_col_1  = st.columns([4.3,1]) 
                 with modal_col_0:
                     if st.button("이름 변경해서 추가"):
-                        # 이름 변경해서 추가 로직
-                        db.insert_recipe(st.session_state.user_id, new_food_name, st.session_state['response'])
-                        st.session_state.modal_col_0 = True
-                        st.session_state.modal_col_1 = False
-                        # st.success("이름 변경해서 추가되었습니다.")
+                        if not db.check_exists(st.session_state.user_id, new_food_name):
+                            # 이름 변경해서 추가 로직
+                            db.insert_recipe(st.session_state.user_id, new_food_name, st.session_state['response'])
+                            st.session_state.modal_col_0 = True
+                            st.session_state.modal_col_1 = False
+                            # st.success("이름 변경해서 추가되었습니다.")
+                        else:
+                            st.error('이미 존재하는 레시피 이름입니다.')
                 with modal_col_1:
                     if st.button("덮어쓰기"):   
                         # 덮어쓰기 로직
