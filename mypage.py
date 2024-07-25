@@ -62,7 +62,7 @@ def display_mypage():
         
     cols = st.columns([1, 1]) 
     with cols[0]:
-        with st.form("add_ingredient"):
+        with st.form("add_ingredient", clear_on_submit=True):
             st.markdown("**재료 추가하기**")
             add_ingredient_input = st.text_input("추가할 재료를 입력하세요. 예시) 사과")
             submitted_add_ingredient = st.form_submit_button('추가')
@@ -72,7 +72,7 @@ def display_mypage():
             # st.session_state.input_text = ''
             st.rerun()
     with cols[1]:
-        with st.form("delete_ingredient"):
+        with st.form("delete_ingredient", clear_on_submit=True):
             st.markdown("**재료 삭제하기**")
             delete_ingredient_input = st.text_input("삭제할 재료를 입력하세요. 예시) 사과", value="")
             submitted_delete_ingredient = st.form_submit_button('삭제')
@@ -99,7 +99,7 @@ def display_mypage():
             """,
             unsafe_allow_html=True
         )
-        with st.form("add_likes"):
+        with st.form("add_likes", clear_on_submit=True):
             st.markdown("**좋아하는 음식 추가하기**")
             add_likes_input = st.text_input("추가할 음식 입력하세요. 예시) 사과", value="")
             submitted_add_likes = st.form_submit_button('추가')
@@ -107,7 +107,7 @@ def display_mypage():
             db.add_likes(user_id, add_likes_input)
             print("add_likes 성공")
             st.rerun()
-        with st.form("del_likes"):
+        with st.form("del_likes", clear_on_submit=True):
             st.markdown("**좋아하는 음식 삭제하기**")
             delete_likes_input = st.text_input("삭제할 음식 입력하세요. 예시) 사과", value="")
             submitted_delete_likes = st.form_submit_button('삭제')
@@ -130,7 +130,7 @@ def display_mypage():
             """,
             unsafe_allow_html=True
         )
-        with st.form("add_dislikes"):
+        with st.form("add_dislikes", clear_on_submit=True):
             st.markdown("**불호 음식 추가하기**")
             add_dislikes_input = st.text_input("추가할 음식 입력하세요. 예시) 사과", value="")
             submitted_add_dislikes = st.form_submit_button('추가')
@@ -138,7 +138,7 @@ def display_mypage():
             db.add_dislikes(user_id, add_dislikes_input)
             print("add_dislikes 성공")
             st.rerun()
-        with st.form("del_dislikes"):
+        with st.form("del_dislikes", clear_on_submit=True):
             st.markdown("**불호 음식 삭제하기**")
             delete_dislikes_input = st.text_input("삭제할 음식 입력하세요. 예시) 사과", value="")
             submitted_delete_dislikes = st.form_submit_button('삭제')
