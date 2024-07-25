@@ -14,15 +14,11 @@ import os
 import time
 
 # chain에 query 질의하는 함수.
-def ask_something(chain, query): #
-
-    print(f"User : {query}")
+def ask_something(chain, query): 
 
     chain_output = chain.invoke(
         {"input": query}
     )
-
-    print(f"LLM : {chain_output}")
     
     return chain_output
 
