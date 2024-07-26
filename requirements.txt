@@ -3,8 +3,7 @@ plotly
 streamlit
 yfinance
 pandas-datareader
-prophet
-streamlit                                                 
+prophet                                            
 streamlit-cookies-controller
 streamlit-modal
 langchain_text_splitters
