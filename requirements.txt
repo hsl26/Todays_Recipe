@@ -1,9 +1,9 @@
 pandas
 plotly
-streamlit
 yfinance
 pandas-datareader
-prophet                                            
+prophet 
+streamlit                                           
 streamlit-cookies-controller
 streamlit-modal
 langchain_text_splitters
