@@ -9,6 +9,5 @@ streamlit-modal
 langchain_text_splitters
 langchain_openai
 langchain_chroma
-langchain.chains
-langchain.memory
+langchain
 langchain_core
