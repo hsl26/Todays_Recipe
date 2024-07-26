@@ -17,7 +17,7 @@ def login_page():
         # 로그인 버튼
         if st.form_submit_button('로그인'):
             if id_not_exists(id):
-                st.success("회원정보가 없습니다. 회원가입을 진행해주세요")
+                st.error("회원정보가 없습니다. 회원가입을 진행해주세요")
             else:
                 if log_in(id, password):
                     st.session_state.name = get_user_name(id)
